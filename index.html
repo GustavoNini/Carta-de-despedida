@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Nini</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Georgia&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS GERAIS --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f4d9; 
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        /* --- ENVELOPE (ESTRUTURA 3D) --- */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            perspective: 1000px; 
+        }
+
+        .envelope-wrapper:hover { transform: scale(1.02); }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #7a1f20; 
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+        }
+
+        /* --- PAPEL (ANIMAÇÃO) --- */
+        .paper {
+            position: absolute;
+            top: 10px; left: 20px;
+            width: 260px; height: 180px;
+            background-color: #fff;
+            z-index: 1; 
+            transition: transform 0.5s ease 0.4s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* --- FRENTE DO ENVELOPE --- */
+        .pocket {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 0;
+            z-index: 2;
+            border-top: 100px solid transparent;
+            border-right: 150px solid #b83537; 
+            border-bottom: 100px solid #b83537;
+            border-left: 150px solid #b83537;
+        }
+
+        /* ASSINATURA EXTERNA */
+        .envelope::after {
+            content: 'Nini';
+            position: absolute;
+            bottom: 15px; right: 20px;
+            z-index: 5; 
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #f9f4d9; 
+            letter-spacing: 2px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* --- ABA SUPERIOR --- */
+        .flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            z-index: 3;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #a52d2d;
+            transform-origin: top; 
+            transition: transform 0.4s ease, z-index 0.2s;
+        }
+
+        /* --- ESTADOS DA ANIMAÇÃO --- */
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0; 
+        }
+
+        .envelope-wrapper.open .paper {
+            transform: translateY(-80px);
+            z-index: 2;
+        }
+
+        /* --- TELA DA CARTA (TEXTO) --- */
+        .message-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #f9f4d9; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease 1s; 
+            z-index: 10;
+            overflow-y: auto; /* IMPORTANTE: Permite rolar o texto longo */
+            padding-top: 60px;
+        }
+
+        .envelope-wrapper.open ~ .message-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .message-content {
+            max-width: 600px;
+            width: 90%;
+            text-align: left;
+            color: #3e2723; 
+            line-height: 1.6; /* Espaçamento bom para leitura */
+            font-size: 1.15rem;
+            padding-bottom: 100px; /* Espaço extra no final para scroll no celular */
+            animation: fadeInText 1s ease 1.5s forwards;
+        }
+
+        /* Título / Saudação */
+        .salutation {
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #2c1b18;
+        }
+
+        /* Parágrafos */
+        .message-content p {
+            margin-bottom: 20px;
+            text-indent: 0; 
+        }
+
+        /* Assinatura Final */
+        .signature {
+            font-family: 'Georgia', serif;
+            margin-top: 50px;
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .click-instruction {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: #8d6e63;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .envelope-wrapper.open .click-instruction { opacity: 0; }
+        
+        /* Ajustes para Celular */
+        @media (max-width: 600px) {
+            .envelope { transform: scale(0.85); }
+            .message-content { 
+                font-size: 1rem; 
+                padding-top: 20px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="envelope-wrapper" onclick="openLetter()">
+        <div class="envelope">
+            <div class="paper"></div>
+            <div class="pocket"></div>
+            <div class="flap"></div>
+        </div>
+        <div class="click-instruction">Toque para abrir</div>
+    </div>
+
+    <div class="message-overlay">
+        <div class="message-content">
+            
+            <p class="salutation">Querida Nicole, que pra mim sempre vai ser Nini.</p>
+
+            <p>É com lágrimas nos olhos e com uma forte dor no coração que escrevo isso. Sei que fui muito inseguro e te fiz mal, ao ponto de não me achar uma boa pessoa. Quero que leia cada coisa com carinho, pois eu realmente estou me abrindo.</p>
+
+            <p>Você foi de longe a pessoa mais especial e incrível que já conheci. No CEEP eu sempre olhei pra você e enxerguei a fã de ACOTAR mais baixinha e linda que eu poderia ter conhecido. Você era a pessoa mais fácil de ler quando se zangava com as brincadeiras horríveis que eu fazia. Me arrependo de ter te recusado. Eu nem conseguiria imaginar naquela época o quão imbecil e imaturo eu fui com você.</p>
+
+            <p>Entrar no Segue-me foi uma das coisas que nunca quis, mas também uma das coisas que tenho certeza que foi Deus que colocou na minha vida. Ter você lá foi o maior presente que poderia ter ganhado, porque a gente não só se aproximou como eu vi algo em você que me marcou profundamente, e tenho certeza que foi um instrumento de Deus.</p>
+
+            <p>Durante a nossa relação eu não fui nada mais nada menos que um babaca, covarde e inseguro. Algo que jamais deveria ter sido com você. Sinto muito de verdade por cada besteira que falei e cada atitude ou falta dela que te magoou. Não fui perfeito e acho que nunca vou ser. Me apaixonei a cada sorriso, cara feia e olhar que você me dava. Me arrependo amargamente de ter te tratado mal, mas não me arrependo de ter te amado. Você me dava uma alegria que nunca conseguiria achar em outros cantos.</p>
+
+            <p>Infelizmente eu estraguei tudo. Nesse momento não tem uma parte de mim que não sinta a sua falta. A verdade é que te amo e não sei se conseguirei um dia não te amar. Você não é uma pessoa qualquer e nunca aceite ser tratada como tal. Espero que encontre alguém que te ame verdadeiramente e que possa ser aquilo que não fui.</p>
+
+            <p>Vou sempre lembrar de você mas não consigo mais ser somente seu amigo. Eu tentei e durante todo esse tempo afastado tentei cada vez mais, mas infelizmente não posso fechar os olhos pra mim e pro meu coração. Cada vácuo me trazia um vazio tão doloroso que não consigo explicar, e você mostrou como o contato também estava sendo difícil ou até mesmo estressante pra você. Eu não sei se algum dia conseguirei ser o amigo que você precisa. Nunca a tratarei com indiferença mas não consigo mais mandar mensagem ou falar sem me ferir.</p>
+
+            <p>Não quero te bloquear porque eu me importo com você e quero que meu número possa ser usado quando realmente precisar de mim. Eu vou ficar feliz por cada vitória sua, porque sei o quanto você as merece. Eu sou verdadeiramente feliz por você.</p>
+
+            <p>Eu te amo, amei e amarei.</p>
+
+            <div class="signature">
+                Com carinho,<br>
+                Gustavo.
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="One Direction - Change My Mind.mp3" type="audio/mpeg">
+        Seu navegador não suporta áudio.
+    </audio>
+
+    <script>
+        function openLetter() {
+            const wrapper = document.querySelector('.envelope-wrapper');
+            const music = document.getElementById('bg-music');
+
+            if(!wrapper.classList.contains('open')) {
+                wrapper.classList.add('open');
+                
+                // Tenta tocar a música. O volume está em 50% para não assustar.
+                music.volume = 0.5;
+                music.play().catch(error => {
+                    console.log("Autoplay bloqueado pelo navegador até interação: ", error);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
